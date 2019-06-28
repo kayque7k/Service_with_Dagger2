@@ -1,6 +1,10 @@
 package com.wolfdevelloper.estudo.interactor.remote.service.statement
 
 import com.wolfdevelloper.estudo.entity.ListStatement
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import retrofit2.Response
 import java.io.BufferedReader
@@ -22,48 +26,50 @@ class HttpServiceStatement : IServiceStatement {
         failure: (throwable: Throwable) -> Unit
     ) {
 
-        val sendHttpRequestThread = object : Thread() {
-            override fun run() {
-                var httpConn: HttpURLConnection? = null
-                var isReader: InputStreamReader? = null
-                var bufReader: BufferedReader? = null
-                val readTextBuf = StringBuffer()
+        GlobalScope.async {
+            var httpConn: HttpURLConnection? = null
+            var isReader: InputStreamReader? = null
+            var bufReader: BufferedReader? = null
+            val readTextBuf = StringBuffer()
 
-                try {
-                    val url =
-                        URL(com.wolfdevelloper.estudo.interactor.remote.connect.URL.WEB_SERVICE + "statements/$id")
-                    httpConn = url.openConnection() as HttpURLConnection
-                    httpConn.requestMethod = com.wolfdevelloper.estudo.interactor.remote.connect.URL.REQUEST_METHOD_GET
-                    httpConn.connectTimeout = 10000
-                    httpConn.readTimeout = 10000
-                    val inputStream = httpConn.inputStream
-                    isReader = InputStreamReader(inputStream)
-                    bufReader = BufferedReader(isReader)
-                    var line: String? = bufReader.readLine()
-                    while (line != null) {
-                        readTextBuf.append(line)
-                        line = bufReader.readLine()
-                    }
-                } catch (ex: IOException) {
+            try {
+                val url =
+                    URL(com.wolfdevelloper.estudo.interactor.remote.connect.URL.WEB_SERVICE + "statements/$id")
+                httpConn = url.openConnection() as HttpURLConnection
+                httpConn.requestMethod = com.wolfdevelloper.estudo.interactor.remote.connect.URL.REQUEST_METHOD_GET
+                httpConn.connectTimeout = 10000
+                httpConn.readTimeout = 10000
+                val inputStream = httpConn.inputStream
+                isReader = InputStreamReader(inputStream)
+                bufReader = BufferedReader(isReader)
+                var line: String? = bufReader.readLine()
+                while (line != null) {
+                    readTextBuf.append(line)
+                    line = bufReader.readLine()
+                }
+            } catch (ex: IOException) {
+                launch(Dispatchers.Main) {
                     failure.invoke(ex)
-                } finally {
-                    try {
-                        if (bufReader != null) {
-                            bufReader.close()
-                            bufReader = null
-                        }
+                }
+            } finally {
+                try {
+                    if (bufReader != null) {
+                        bufReader.close()
+                        bufReader = null
+                    }
 
-                        if (isReader != null) {
-                            isReader.close()
-                            isReader = null
-                        }
+                    if (isReader != null) {
+                        isReader.close()
+                        isReader = null
+                    }
 
-                        if (httpConn != null) {
-                            httpConn.disconnect()
-                            httpConn = null
-                        }
+                    if (httpConn != null) {
+                        httpConn.disconnect()
+                        httpConn = null
+                    }
 
-                        if (readTextBuf.isNotEmpty())
+                    if (readTextBuf.isNotEmpty())
+                        launch(Dispatchers.Main) {
                             sucess.invoke(
                                 Response.success(
                                     Json.parse(
@@ -72,12 +78,13 @@ class HttpServiceStatement : IServiceStatement {
                                     )
                                 )
                             )
-                    } catch (ex: IOException) {
+                        }
+                } catch (ex: IOException) {
+                    launch(Dispatchers.Main) {
                         failure.invoke(ex)
                     }
                 }
             }
         }
-        sendHttpRequestThread.start()
     }
 }

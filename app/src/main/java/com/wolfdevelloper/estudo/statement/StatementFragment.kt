@@ -69,6 +69,6 @@ class StatementFragment : Fragment(), StatementContract.StatementPresenterOutput
     }
 
     override fun resultStatement(listStatement: MutableList<Statement>) {
-        statementViewModel.list.postValue(listStatement)
+        statementViewModel.list.value = listStatement
     }
 }
