@@ -12,20 +12,14 @@ class StatementModule(
 
     @Provides
     @HttpApi
-    fun providerIServiceStatement(): IServiceStatement {
-        return HttpServiceStatement()
-    }
+    fun providerIServiceStatement(): IServiceStatement = HttpServiceStatement()
 
     @Provides
     fun providerStatementInteractorInput(
         iServiceStatement: IServiceStatement
-    ): StatementContract.StatementInteractorInput {
-        return StatementInteractor(statementPresenter!!, iServiceStatement)
-    }
+    ): StatementContract.StatementInteractorInput = StatementInteractor(statementPresenter!!, iServiceStatement)
 
     @Provides
-    fun providerStatementPresenterInput(): StatementContract.StatementPresenterInput {
-        return StatementPresenter(statementFragment!!)
-    }
+    fun providerStatementPresenterInput(): StatementContract.StatementPresenterInput = StatementPresenter(statementFragment!!)
 
 }

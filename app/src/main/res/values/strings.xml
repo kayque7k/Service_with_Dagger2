@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Estudo</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="acessibility_list">Lista</string>
+
+    <string name="acessibility_txt_title">Titulo %s</string>
+    <string name="acessibility_txt_date">Data %s</string>
+    <string name="acessibility_txt_describe">Descrição %s</string>
+    <string name="acessibility_txt_money">Dinheiro %s</string>
 </resources>

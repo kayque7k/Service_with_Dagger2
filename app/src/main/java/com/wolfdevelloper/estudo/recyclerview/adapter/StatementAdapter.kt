@@ -11,29 +11,24 @@ import com.wolfdevelloper.estudo.recyclerview.viewholder.StatementViewHolder
 
 class StatementAdapter(private val list: MutableList<Statement>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return StatementViewHolder(
-            DataBindingUtil.inflate<ItemStatementBinding>(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+        StatementViewHolder(
+            DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
                 R.layout.item_statement,
                 parent,
                 false
             )
         )
-    }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is StatementViewHolder)
             holder.binding.statement = list[position]
     }
 
-    override fun getItemCount(): Int {
-        return list.size
-    }
+    override fun getItemCount(): Int = list.size
 
-    fun updateList(list: MutableList<Statement>){
-        this.list.clear()
-        this.list.addAll(list)
-        notifyDataSetChanged()
-    }
+
+    fun getStatements(): MutableList<Statement> = this.list
+
 }

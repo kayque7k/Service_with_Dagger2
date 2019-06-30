@@ -1,5 +1,6 @@
 package com.wolfdevelloper.estudo.statement
 
+import com.wolfdevelloper.estudo.components.notNull
 import com.wolfdevelloper.estudo.entity.ListStatement
 import com.wolfdevelloper.estudo.interactor.remote.service.statement.IServiceStatement
 import com.wolfdevelloper.estudo.interactor.remote.service.statement.ServiceStatement
@@ -13,21 +14,20 @@ class StatementInteractor(
 ) :
     StatementContract.StatementInteractorInput {
 
-    override fun loadStatement(id: Int) {
+    override fun loadStatement(id: Int) =
         iServiceStatement.getStatement(id,
             sucess = {
-                iStatementInteractorOutput.resultStatement(it.body())
+                if (it.code() == 200) {
+                    val list = it.body()
+                    if (list.notNull()) {
+                        if (list.error.code == 0) {
+                            iStatementInteractorOutput.resultStatement(list)
+                        }
+                    }
+                }
             },
             failure = {
 
             })
-    }
-}
 
-@ExperimentalContracts
-fun ListStatement?.notNUll() : Boolean{
-    contract {
-       returns(true) implies (this@notNUll != null)
-    }
-    return this != null
 }

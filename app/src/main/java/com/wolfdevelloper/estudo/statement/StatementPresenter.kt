@@ -25,9 +25,8 @@ class StatementPresenter(
             .inject(this)
     }
 
-    override fun loadStatement() {
-        iStatementInteractorInput.loadStatement(1)
-    }
+    override fun loadStatement() = iStatementInteractorInput.loadStatement(1)
+
 
     override fun resultStatement(listStatement: ListStatement?) {
 
@@ -41,5 +40,10 @@ class StatementPresenter(
             .toMutableList()
 
         iStatementPresenterOutput.resultStatement(list)
+    }
+
+    override fun cleanAndAddStatement(listStatement: MutableList<Statement>) {
+        iStatementPresenterOutput.getStatement().clear()
+        iStatementPresenterOutput.getStatement().addAll(listStatement)
     }
 }

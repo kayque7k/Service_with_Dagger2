@@ -42,7 +42,6 @@ class StatementFragment : Fragment(), StatementContract.StatementPresenterOutput
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_statement, container, false)
     }
 
@@ -59,9 +58,11 @@ class StatementFragment : Fragment(), StatementContract.StatementPresenterOutput
                 layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
             }
 
-            statementViewModel.list.observe(this@StatementFragment, Observer {
-                myAdapter.updateList(it)
-            })
+            statementViewModel.list.observe(this@StatementFragment,
+                Observer {
+                    iStatementPresenterInput.cleanAndAddStatement(it)
+                    myAdapter.notifyDataSetChanged()
+                })
 
             if (statementViewModel.list.value?.isEmpty() ?: true)
                 iStatementPresenterInput.loadStatement()
@@ -71,4 +72,7 @@ class StatementFragment : Fragment(), StatementContract.StatementPresenterOutput
     override fun resultStatement(listStatement: MutableList<Statement>) {
         statementViewModel.list.value = listStatement
     }
+
+    override fun getStatement(): MutableList<Statement> = myAdapter.getStatements()
+
 }

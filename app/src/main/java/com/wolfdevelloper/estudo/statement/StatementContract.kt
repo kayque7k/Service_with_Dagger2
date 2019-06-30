@@ -4,10 +4,11 @@ import androidx.lifecycle.LiveData
 import com.wolfdevelloper.estudo.entity.ListStatement
 import com.wolfdevelloper.estudo.viewmodel.Statement
 
-class StatementContract {
+interface StatementContract {
 
     interface StatementPresenterInput {
         fun loadStatement()
+        fun cleanAndAddStatement(listStatement: MutableList<Statement>)
     }
 
     interface StatementInteractorInput {
@@ -16,6 +17,7 @@ class StatementContract {
 
     interface StatementPresenterOutput {
         fun resultStatement(listStatement: MutableList<Statement>)
+        fun getStatement(): MutableList<Statement>
     }
 
     interface StatementInteractorOutput {
